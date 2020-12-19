@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "311876031145",
+    "project_id": "whatsclone-7a481",
+    "storage_bucket": "whatsclone-7a481.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311876031145:android:ba85107ed74ceeb0110fb8",
+        "android_client_info": {
+          "package_name": "com.wendelstrauss.whatsclone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "311876031145-6licr57m90sp7o7erc4i2jksoag4p5ch.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wendelstrauss.whatsclone",
+            "certificate_hash": "ae28bf595cca03e3537301e956807298f7175920"
+          }
+        },
+        {
+          "client_id": "311876031145-2eibfmuihmfga9lo23auhj6fa9hqqglj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdSmzJemn5_ggwTT5VRNO_p28rKLPNkgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "311876031145-2eibfmuihmfga9lo23auhj6fa9hqqglj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
