@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">WhatsClone</string>
+
+    <string name="txt_novo_grupo">Novo grupo</string>
+    <string name="txt_nova_transmissao">Nova transmissão</string>
+    <string name="txt_whatsweb">Whatsapp Web</string>
+    <string name="txt_mensagens_favoritas">Mensagens favoritas</string>
+    <string name="txt_configuracoes">Configurações</string>
+
+
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+</resources>

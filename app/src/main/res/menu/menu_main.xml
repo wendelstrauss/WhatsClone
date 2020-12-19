@@ -1,0 +1,36 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.wendelstrauss.whatsclone.MainActivity">
+
+    <item
+        android:id="@+id/menu_novogrupo"
+        android:orderInCategory="100"
+        android:title="@string/txt_novo_grupo"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_transmissao"
+        android:orderInCategory="100"
+        android:title="@string/txt_nova_transmissao"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_whatsweb"
+        android:orderInCategory="100"
+        android:title="@string/txt_whatsweb"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_msgfav"
+        android:orderInCategory="100"
+        android:title="@string/txt_mensagens_favoritas"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_configuracoes"
+        android:orderInCategory="100"
+        android:title="@string/txt_configuracoes"
+        app:showAsAction="never" />
+
+</menu>
