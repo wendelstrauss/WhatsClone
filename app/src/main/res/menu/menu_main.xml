@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.wendelstrauss.whatsclone.MainActivity">
+    tools:context="com.wendelstrauss.whatsclone.activity.MainActivity">
 
     <item
         android:id="@+id/menu_novogrupo"
@@ -31,6 +31,12 @@
         android:id="@+id/menu_configuracoes"
         android:orderInCategory="100"
         android:title="@string/txt_configuracoes"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_desconectar"
+        android:orderInCategory="100"
+        android:title="@string/txt_desconectar"
         app:showAsAction="never" />
 
 </menu>

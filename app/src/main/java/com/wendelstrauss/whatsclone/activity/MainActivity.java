@@ -1,9 +1,14 @@
-package com.wendelstrauss.whatsclone;
+package com.wendelstrauss.whatsclone.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.wendelstrauss.whatsclone.R;
+import com.wendelstrauss.whatsclone.config.ConfiguracaoFirebase;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,12 +19,17 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth autenticacao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //configuracoes iniciais
+        autenticacao = ConfiguracaoFirebase.getAutenticacao();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -45,11 +55,30 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_configuracoes) {
-            return true;
+        switch (item.getItemId()){
+            case R.id.menu_configuracoes:
+                abrirTela(ConfiguracoesActivity.class);
+                break;
+            case R.id.menu_desconectar:
+                desconectar();
+                break;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
+
+    private void abrirTela(Class activity){
+        startActivity(new Intent(MainActivity.this, activity));
+    }
+
+    private void desconectar(){
+
+        if(autenticacao!=null){
+            autenticacao.signOut();
+            startActivity(new Intent(MainActivity.this, CadastroTelefoneActivity.class));
+            finish();
+        }
+
+    }
+
 }

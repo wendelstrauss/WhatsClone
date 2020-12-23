@@ -22,6 +22,11 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 }
 
 dependencies {
@@ -38,9 +43,10 @@ dependencies {
 
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:26.1.1')
-    implementation 'com.google.firebase:firebase-auth:19.4.0'
-    implementation 'com.google.firebase:firebase-storage:19.2.0'
-    implementation 'com.google.firebase:firebase-database:19.5.0'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'androidx.browser:browser:1.2.0'
 
     //Circle ImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
@@ -49,5 +55,9 @@ dependencies {
     //SmartTabLayout
     implementation 'com.ogaclejapan.smarttablayout:library:2.0.0@aar'
     implementation 'com.ogaclejapan.smarttablayout:utils-v4:2.0.0@aar'
+    //mascara de telefone
+    implementation 'com.github.santalu:maskara:1.0.0'
+    //picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
 }

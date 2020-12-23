@@ -6,6 +6,7 @@
     <string name="txt_whatsweb">Whatsapp Web</string>
     <string name="txt_mensagens_favoritas">Mensagens favoritas</string>
     <string name="txt_configuracoes">Configurações</string>
+    <string name="txt_desconectar">Desconectar</string>
 
 
     <string name="first_fragment_label">First Fragment</string>
@@ -15,4 +16,29 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="senha">Senha</string>
+    <string name="email_telefone">Email</string>
+    <string name="login">Login</string>
+    <string name="usando_email">Usando Email</string>
+    <string name="usando_telefone">Usando Telefone</string>
+    <string name="cadastrar">Cadastrar</string>
+    <string name="nome">Nome</string>
+    <string name="seu_nome">Seu Nome</string>
+    <string name="email">Email</string>
+    <string name="insira_seu_telefone">Insira seu telefone</string>
+    <string name="prosseguir">Prosseguir</string>
+    <string name="verificar">Verificar Codigo</string>
+    <string name="aviso_cobranca">Enviaremos um SMS para seu telefone. Este procedimento pode gerar custos por parte de sua operadora. Após clicar no botão, o navegador abrirá.</string>
+    <string name="codigo_verificacao">Insira o código enviado por SMS</string>
+    <string name="enviar_codigo">Enviar Código</string>
+    <string name="aviso_nome">Esse não é seu nome de usuário nem seu PIN. Esse nome será visível para seus contatos do WhatsClone.</string>
+    <string name="finalizar_cadastro">Finalizar Cadastro!</string>
+    <string name="carregando">Carregando...</string>
+    <string name="recado">Recado</string>
+    <string name="telefone">Telefone</string>
+    <string name="remover_foto">Remover Foto</string>
+    <string name="galeria">Galeria</string>
+    <string name="camera">Câmera</string>
+    <string name="recado_padrao">Olá! Eu estou usando o WhatsClone.</string>
+    <string name="reenviar_codigo">Reenviar Código</string>
 </resources>
