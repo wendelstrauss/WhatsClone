@@ -1,17 +1,22 @@
 package com.wendelstrauss.whatsclone.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 import com.wendelstrauss.whatsclone.R;
 import com.wendelstrauss.whatsclone.config.ConfiguracaoFirebase;
+import com.wendelstrauss.whatsclone.fragment.ConversasFragment;
+import com.wendelstrauss.whatsclone.fragment.StatusFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.View;
 import android.view.Menu;
@@ -19,33 +24,82 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    private MaterialSearchView searchView;
+    private FloatingActionButton fab;
+
     private FirebaseAuth autenticacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        //configurar toolbar
+        Toolbar toolbar = findViewById(R.id.toolbarSecundaria);
         setSupportActionBar(toolbar);
+
+        //inicializar TabLayout
+        inicializarTabLayout();
+        //inicializar pesquisa
+        inicializarComponentes();
 
         //configuracoes iniciais
         autenticacao = ConfiguracaoFirebase.getAutenticacao();
+    }
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+    private void inicializarTabLayout() {
+
+        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+                getSupportFragmentManager(), FragmentPagerItems.with(this)
+                .add(R.string.conversas, ConversasFragment.class)
+                .add(R.string.status, StatusFragment.class)
+                .create());
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(adapter);
+
+        SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
+        viewPagerTab.setViewPager(viewPager);
+
+    }
+
+    private void inicializarComponentes() {
+
+        //componentes
+        searchView = findViewById(R.id.btnPesquisar);
+        fab = findViewById(R.id.fabPrincipal);
+
+        //configurar searchview
+        searchView.setHint("Pesquisar");
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        //clique no FAB
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                abrirTela(ContatosActivity.class);
             }
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+        //configurando pesquisa
+        MenuItem item = menu.findItem( R.id.menu_pesquisar );
+        searchView.setMenuItem( item );
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

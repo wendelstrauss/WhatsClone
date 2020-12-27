@@ -22,9 +22,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.wendelstrauss.whatsclone.R;
 import com.wendelstrauss.whatsclone.config.ConfiguracaoFirebase;
 import com.wendelstrauss.whatsclone.model.Usuario;
@@ -57,13 +61,13 @@ public class CadastroFinalizarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_finalizar);
 
-        //pegando informacoes da activity anterior
-        recuperarDados();
-
         //inicializar componentes
         imagemPerfil = findViewById(R.id.imagemFinalizarCadastro);
         nomeExibicao = findViewById(R.id.nomeFinalizarCadastro);
         btnFinalizar = findViewById(R.id.btnFinalizarCadastro);
+
+        //pegando informacoes da activity anterior
+        recuperarDados();
 
         //configuracoes iniciais
         identificadorUsuario = ConfiguracaoFirebase.getUsuarioAtual().getUid();
@@ -86,7 +90,6 @@ public class CadastroFinalizarActivity extends AppCompatActivity {
 
         nome = nomeExibicao.getText().toString();
         if(!nome.isEmpty()){
-            avisoToast("url: "+urlFoto.toString());
             usuario = new Usuario();
             usuario.setIdUsuario(identificadorUsuario);
             usuario.setNome(nome);
@@ -95,7 +98,6 @@ public class CadastroFinalizarActivity extends AppCompatActivity {
             usuario.salvar();
             usuario.atualizarFotoUsuario(urlFoto);
             if( usuario.atualizarNomeUsuario(nome) ){
-                avisoToast("url: "+urlFoto.toString());
                 redirecionar();
             }
 
@@ -114,6 +116,34 @@ public class CadastroFinalizarActivity extends AppCompatActivity {
     private void recuperarDados() {
         Bundle bundle = getIntent().getExtras();
         telefone = bundle.getString("telefone");
+
+        //vendo se o usuario já existe
+        DatabaseReference usuarioAtualRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child( autenticacao.getUid() );
+        usuarioAtualRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Usuario usuario = snapshot.getValue(Usuario.class);
+                String foto = usuario.getFoto();
+                String nome = usuario.getNome();
+
+                //botando a imagem como foto de perfil
+                if( foto != null ) {
+                    Picasso.get().load(foto).into(imagemPerfil);
+                }else {
+                    imagemPerfil.setImageResource( R.drawable.padrao_usuario );
+                }
+
+                //botando nome
+                nomeExibicao.setText( nome );
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void abrirDialog(){
@@ -171,6 +201,8 @@ public class CadastroFinalizarActivity extends AppCompatActivity {
                 //botando a imagem como foto de perfil
                 if( imagem != null ) {
                     imagemPerfil.setImageBitmap( imagem );
+                }else {
+                    imagemPerfil.setImageResource( R.drawable.padrao_usuario );
                 }
 
                 //salvando foto no firebase
@@ -211,8 +243,6 @@ public class CadastroFinalizarActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
                             urlFoto = task.getResult();
-                            avisoToast("url: "+urlFoto.toString());
-
                         }
                     });
 

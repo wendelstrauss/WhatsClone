@@ -64,7 +64,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editCadastroTelTelefone"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:maxLength="6"/>
 
     <Button
         android:id="@+id/btnCadastroTel"

@@ -4,6 +4,13 @@
     tools:context="com.wendelstrauss.whatsclone.activity.MainActivity">
 
     <item
+        android:id="@+id/menu_pesquisar"
+        android:icon="@drawable/ic_pesquisa"
+        android:orderInCategory="100"
+        android:title="@string/txt_pesquisar"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/menu_novogrupo"
         android:orderInCategory="100"
         android:title="@string/txt_novo_grupo"
