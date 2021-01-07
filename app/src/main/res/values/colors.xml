@@ -5,4 +5,5 @@
     <color name="colorAccent">#25d366</color>
     <color name="text_enabled">#FFF</color>
     <color name="text_disabled">#AEFFFFFF</color>
+    <color name="balao_remetente">#e6fdce</color>
 </resources>

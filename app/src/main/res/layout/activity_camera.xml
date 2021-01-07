@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context=".activity.CameraActivity">
+
+    <SurfaceView
+        android:id="@+id/viewCameraView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/flashCameraView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_flash_off"
+        app:layout_constraintBottom_toBottomOf="@+id/botaoCameraView"
+        app:layout_constraintEnd_toStartOf="@+id/botaoCameraView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/botaoCameraView" />
+
+    <ImageView
+        android:id="@+id/botaoCameraView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/btn_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/viewCameraView"
+        app:layout_constraintEnd_toStartOf="@+id/switchCameraView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/flashCameraView" />
+
+    <ImageView
+        android:id="@+id/switchCameraView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_switch_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/botaoCameraView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/botaoCameraView"
+        app:layout_constraintTop_toTopOf="@+id/botaoCameraView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

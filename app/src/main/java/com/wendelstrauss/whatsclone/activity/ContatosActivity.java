@@ -40,12 +40,15 @@ import java.util.List;
 
 public class ContatosActivity extends AppCompatActivity  {
 
+    private Toolbar toolbar;
     private MaterialSearchView searchView;
 
     private List<Usuario> listaContatos = new ArrayList<>();
     private AdapterContatos adapterContatos;
     private RecyclerView recyclerContatos;
     private DatabaseReference usuariosRef;
+
+    private Usuario usuarioLogado;
 
 
 
@@ -65,14 +68,12 @@ public class ContatosActivity extends AppCompatActivity  {
         recuperarContatosTel();
 
         //Configurar toolbar
-        Toolbar toolbar = findViewById(R.id.toolbarSecundaria);
+        toolbar = findViewById(R.id.toolbarSecundaria);
         toolbar.setTitle("Contatos");
         toolbar.setSubtitle(listaContatos.size() + " contatos");
         setSupportActionBar( toolbar );
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator( R.drawable.ic_back ); //muda o icone de voltar
-
-
 
     }
 
@@ -133,9 +134,13 @@ public class ContatosActivity extends AppCompatActivity  {
                 for (DataSnapshot ds: snapshot.getChildren()){
                     Usuario usuarioResultado = ds.getValue(Usuario.class);
                     if(usuarioResultado.getTelefone().contains(telPesquisa)){
-                        usuarioResultado.setNome( nomeExibicao );
-                        listaContatos.add( usuarioResultado );
-                        adapterContatos.notifyDataSetChanged();
+                        if( !usuarioResultado.getIdUsuario().equals( ConfiguracaoFirebase.getUsuarioAtual().getUid() )) {
+                            usuarioResultado.setNome(nomeExibicao);
+                            listaContatos.add(usuarioResultado);
+                            adapterContatos.notifyDataSetChanged();
+                            salvarNoFirebase( usuarioResultado );
+                            toolbar.setSubtitle(listaContatos.size() + " contatos");
+                        }
                     }
 
                 }
@@ -146,6 +151,11 @@ public class ContatosActivity extends AppCompatActivity  {
 
             }
         });
+    }
+
+    private void salvarNoFirebase(Usuario contato){
+        DatabaseReference contatosRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child(ConfiguracaoFirebase.getUsuarioAtual().getUid()).child("contatos").child(contato.getIdUsuario());
+        contatosRef.setValue(contato);
     }
 
     private void inicializarComponentes() {
@@ -170,7 +180,7 @@ public class ContatosActivity extends AppCompatActivity  {
                     @Override
                     public void onItemClick(View view, int position) {
                         Usuario usuario = listaContatos.get(position);
-                        abrirConversa( usuario );
+                        abrirConversa( usuario.getIdUsuario() );
                     }
 
                     @Override
@@ -203,10 +213,10 @@ public class ContatosActivity extends AppCompatActivity  {
 
     }
 
-    private void abrirConversa(Usuario destinatario){
+    private void abrirConversa(String idDestinatario){
 
         Intent conversa = new Intent(ContatosActivity.this, ConversaActivity.class);
-        conversa.putExtra("destinatario", destinatario);
+        conversa.putExtra("idDestinatario", idDestinatario);
         startActivity( conversa );
         finish();
 
