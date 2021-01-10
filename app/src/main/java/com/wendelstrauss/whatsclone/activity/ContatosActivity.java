@@ -79,6 +79,8 @@ public class ContatosActivity extends AppCompatActivity  {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void recuperarContatosTel() {
+        //add botao de grupo
+        addBtnGrupo();
 
         Cursor cursorContatos = null;
         String idContato = "";
@@ -133,16 +135,15 @@ public class ContatosActivity extends AppCompatActivity  {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds: snapshot.getChildren()){
                     Usuario usuarioResultado = ds.getValue(Usuario.class);
-                    if(usuarioResultado.getTelefone().contains(telPesquisa)){
-                        if( !usuarioResultado.getIdUsuario().equals( ConfiguracaoFirebase.getUsuarioAtual().getUid() )) {
-                            usuarioResultado.setNome(nomeExibicao);
-                            listaContatos.add(usuarioResultado);
-                            adapterContatos.notifyDataSetChanged();
-                            salvarNoFirebase( usuarioResultado );
-                            toolbar.setSubtitle(listaContatos.size() + " contatos");
+                        if (usuarioResultado.getTelefone().contains(telPesquisa)) {
+                            if (!usuarioResultado.getIdUsuario().equals(ConfiguracaoFirebase.getUsuarioAtual().getUid())) {
+                                usuarioResultado.setNome(nomeExibicao);
+                                listaContatos.add(usuarioResultado);
+                                adapterContatos.notifyDataSetChanged();
+                                salvarNoFirebase(usuarioResultado);
+                                toolbar.setSubtitle((listaContatos.size() - 1) + " contatos");
+                            }
                         }
-                    }
-
                 }
             }
 
@@ -215,10 +216,16 @@ public class ContatosActivity extends AppCompatActivity  {
 
     private void abrirConversa(String idDestinatario){
 
-        Intent conversa = new Intent(ContatosActivity.this, ConversaActivity.class);
-        conversa.putExtra("idDestinatario", idDestinatario);
-        startActivity( conversa );
-        finish();
+        if(idDestinatario.equals("btngrupo")){
+            Intent grupo = new Intent(ContatosActivity.this, NovoGrupo1Activity.class);
+            startActivity( grupo );
+            finish();
+        }else{
+            Intent conversa = new Intent(ContatosActivity.this, ConversaActivity.class);
+            conversa.putExtra("idDestinatario", idDestinatario);
+            startActivity( conversa );
+            finish();
+        }
 
     }
 
@@ -232,7 +239,16 @@ public class ContatosActivity extends AppCompatActivity  {
         return super.onCreateOptionsMenu(menu);
     }
 
+    private void addBtnGrupo(){
+        Usuario grupo = new Usuario();
+        grupo.setNome("Novo Grupo");
+        grupo.setIdUsuario("btngrupo");
+        listaContatos.add(grupo);
+    }
+
 }
+
+
 
 /*
 

@@ -38,14 +38,19 @@ public class AdapterContatos extends RecyclerView.Adapter<AdapterContatos.MyView
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         Usuario usuario = lista.get(position);
-
-        if(!usuario.getFoto().isEmpty()) {
-            Picasso.get().load(usuario.getFoto()).into(holder.foto);
+        if(usuario.getIdUsuario().equals("btngrupo")){
+            holder.foto.setImageResource( R.drawable.img_novo_grupo );
+            holder.txtNome.setText( usuario.getNome() );
+            holder.txtRecado.setVisibility(View.GONE);
         }else {
-            holder.foto.setImageResource(R.drawable.padrao_usuario);
+            if (!usuario.getFoto().isEmpty()) {
+                Picasso.get().load(usuario.getFoto()).into(holder.foto);
+            } else {
+                holder.foto.setImageResource(R.drawable.padrao_usuario);
+            }
+            holder.txtNome.setText(usuario.getNome());
+            holder.txtRecado.setText(usuario.getRecado());
         }
-        holder.txtNome.setText(usuario.getNome());
-        holder.txtRecado.setText(usuario.getRecado());
 
     }
 

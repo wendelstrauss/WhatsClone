@@ -20,6 +20,7 @@ public class AdapterMensagens extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private List<Mensagem> listaMensagens;
     private Context c;
+    private boolean isGrupo;
 
     //tipos de views
     private static int TIPO_VERDE = 0;
@@ -30,9 +31,10 @@ public class AdapterMensagens extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int MSG_IMG = 1;
     private static final int MSG_TEXTO_IMG = 2;
 
-    public AdapterMensagens(List<Mensagem> listaMensagens, Context c) {
+    public AdapterMensagens(List<Mensagem> listaMensagens, Context c, boolean isGrupo) {
         this.listaMensagens = listaMensagens;
         this.c = c;
+        this.isGrupo = isGrupo;
     }
 
     @NonNull
@@ -70,16 +72,30 @@ public class AdapterMensagens extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
 
         }else{//adapter branco
-            ((BrancoViewHolder) holder).nomeBranco.setVisibility(View.GONE);
-            ((BrancoViewHolder) holder).telefoneBranco.setVisibility(View.GONE);
-            ((BrancoViewHolder) holder).textoBranco.setText(mensagem.getTexto());
-            ((BrancoViewHolder) holder).horaBranco.setText(mensagem.getHora());
+            if(isGrupo) {
+                ((BrancoViewHolder) holder).nomeBranco.setText(mensagem.getIdAutor());
+                ((BrancoViewHolder) holder).telefoneBranco.setVisibility(View.GONE);
+                ((BrancoViewHolder) holder).textoBranco.setText(mensagem.getTexto());
+                ((BrancoViewHolder) holder).horaBranco.setText(mensagem.getHora());
 
-            //botando a ponta no inicio do balão
-            if( !mensagemAnterior.getIdAutor().equals( mensagem.getIdAutor() ) || position<1){
-                ((BrancoViewHolder) holder).pontaBranco.setVisibility(View.VISIBLE);
-            }else{
-                ((BrancoViewHolder) holder).pontaBranco.setVisibility(View.GONE);
+                //botando a ponta no inicio do balão
+                if (!mensagemAnterior.getIdAutor().equals(mensagem.getIdAutor()) || position < 1) {
+                    ((BrancoViewHolder) holder).pontaBranco.setVisibility(View.VISIBLE);
+                } else {
+                    ((BrancoViewHolder) holder).pontaBranco.setVisibility(View.GONE);
+                }
+            }else {
+                ((BrancoViewHolder) holder).nomeBranco.setVisibility(View.GONE);
+                ((BrancoViewHolder) holder).telefoneBranco.setVisibility(View.GONE);
+                ((BrancoViewHolder) holder).textoBranco.setText(mensagem.getTexto());
+                ((BrancoViewHolder) holder).horaBranco.setText(mensagem.getHora());
+
+                //botando a ponta no inicio do balão
+                if (!mensagemAnterior.getIdAutor().equals(mensagem.getIdAutor()) || position < 1) {
+                    ((BrancoViewHolder) holder).pontaBranco.setVisibility(View.VISIBLE);
+                } else {
+                    ((BrancoViewHolder) holder).pontaBranco.setVisibility(View.GONE);
+                }
             }
 
         }

@@ -14,7 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.NovoGrupo1Activity"></activity>
+        <activity android:name=".activity.DetalhesGrupoActivity" android:parentActivityName=".activity.ConversaActivity"></activity>
+        <activity
+            android:name=".activity.NovoGrupo2Activity"
+            android:parentActivityName=".activity.NovoGrupo1Activity" />
+        <activity
+            android:name=".activity.NovoGrupo1Activity"
+            android:parentActivityName=".activity.ContatosActivity" />
         <activity android:name=".activity.TratarImagemActivity" />
         <activity
             android:name=".activity.CameraActivity"

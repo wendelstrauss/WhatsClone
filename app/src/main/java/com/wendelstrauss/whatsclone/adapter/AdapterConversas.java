@@ -37,21 +37,18 @@ public class AdapterConversas extends RecyclerView.Adapter<AdapterConversas.MyVi
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         Conversa conversa = listaConversas.get(position);
+            //foto
+            if (!conversa.getFotoDestinatario().isEmpty()) {
+                Picasso.get().load(conversa.getFotoDestinatario()).into(holder.foto);
+            } else {
+                holder.foto.setImageResource(R.drawable.padrao_usuario);
+            }
+            //ultima mensagem
+            holder.txtUltima.setText(conversa.getUltimaMensagem().getTexto());
+            holder.txtHora.setText(conversa.getUltimaMensagem().getHora());
 
-        //foto
-        if( !conversa.getFotoDestinatario().isEmpty() ){
-            Picasso.get().load(conversa.getFotoDestinatario()).into(holder.foto);
-        }else{
-            holder.foto.setImageResource(R.drawable.padrao_usuario);
-        }
-        //ultima mensagem
-        holder.txtUltima.setText(conversa.getUltimaMensagem().getTexto());
-        holder.txtHora.setText( conversa.getUltimaMensagem().getHora() );
-
-        //nome
-        holder.txtNome.setText( conversa.getIdDestinatario() );
-
-
+            //nome
+            holder.txtNome.setText(conversa.getNomeDestinatario());
 
     }
 

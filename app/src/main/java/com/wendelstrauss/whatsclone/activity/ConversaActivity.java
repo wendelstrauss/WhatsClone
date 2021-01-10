@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,6 +27,7 @@ import com.wendelstrauss.whatsclone.adapter.AdapterMensagens;
 import com.wendelstrauss.whatsclone.config.ConfiguracaoFirebase;
 import com.wendelstrauss.whatsclone.config.Uteis;
 import com.wendelstrauss.whatsclone.model.Conversa;
+import com.wendelstrauss.whatsclone.model.Grupo;
 import com.wendelstrauss.whatsclone.model.Mensagem;
 import com.wendelstrauss.whatsclone.model.Usuario;
 
@@ -52,8 +52,9 @@ public class ConversaActivity extends AppCompatActivity {
 
     private String idDestinatario;
     private Usuario destinatario = new Usuario();
+    private Grupo grupo = new Grupo();
 
-    private static final String STATUS_ENVIADA = "enviada";
+    private static final String STATUS_ESPERANDO = "esperando";
     private static final int MSG_TEXTO = 0;
 
 
@@ -62,8 +63,8 @@ public class ConversaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversa);
 
-        //recuperar destinatario
-        recuperarDestinatario();
+        //recuperar bundle
+        recuperarInformacoes();
         //inicializar componentes
         inicializarComponentes();
         //recupera conversa
@@ -75,7 +76,11 @@ public class ConversaActivity extends AppCompatActivity {
         layoutContato.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                abrirDetalhesContato();
+                if(conversa.isGrupo()){
+                    abrirDetalhesGrupo();
+                }else{
+                    abrirDetalhesContato();
+                }
             }
         });
 
@@ -101,36 +106,11 @@ public class ConversaActivity extends AppCompatActivity {
 
     }
 
-    private void recuperarDestinatario(){
+    private void recuperarInformacoes(){
         Bundle bundle = getIntent().getExtras();
         if(bundle!= null) {
             idDestinatario = bundle.getString("idDestinatario");
         }
-
-        //recuperar Destinatario
-        if(!idDestinatario.isEmpty()) {
-            DatabaseReference contatosRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child(ConfiguracaoFirebase.getUsuarioAtual().getUid()).child("contatos");
-            Query pesquisa = contatosRef.orderByKey().equalTo(idDestinatario);
-            pesquisa.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.getChildrenCount()>0) {
-                        for (DataSnapshot ds:snapshot.getChildren()) {
-                            destinatario = ds.getValue(Usuario.class);
-                        }
-                    }
-                    configurarElementos();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-
-
-
     }
 
     private void inicializarComponentes(){
@@ -151,28 +131,8 @@ public class ConversaActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setHomeAsUpIndicator( R.drawable.ic_back ); //muda o icone de voltar
 
-        //recyclerView
-        adapterMensagens = new AdapterMensagens(listaMensagens, this);
-        recyclerConversa.setLayoutManager(new LinearLayoutManager(this));
-        recyclerConversa.setHasFixedSize(true);
-        recyclerConversa.setAdapter(adapterMensagens);
-
-    }
-
-    private void configurarElementos(){
-        //carregando nome
-        if(!destinatario.getNome().isEmpty()){//eu tenho o contato salvo
-            nomeDestinatario.setText(destinatario.getNome());
-        }else{//nao tenho o contato salvo
-            nomeDestinatario.setText( idDestinatario );
-        }
-
-        //carregando foto
-        if(!destinatario.getFoto().isEmpty()){
-            Picasso.get().load(destinatario.getFoto()).into(fotoDestinatario);
-        }else {
-            fotoDestinatario.setImageResource(R.drawable.padrao_usuario);
-        }
+        //abrindo caixa de texto
+        editMensagem.requestFocus();
 
     }
 
@@ -186,7 +146,18 @@ public class ConversaActivity extends AppCompatActivity {
                     conversa = snapshot.getValue(Conversa.class);
                 }else{
                     conversa = new Conversa();
+                    conversa.setGrupo(false);
                 }
+
+                //recuperando destinatario ou grupo
+                if(!conversa.isGrupo()){
+                    //recuperar destinatario
+                    recuperarDestinatario();
+                }else {
+                    recuperarGrupo();
+                }
+                //recycler view
+                criarRecycler();
             }
 
             @Override
@@ -194,6 +165,98 @@ public class ConversaActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void recuperarDestinatario(){
+        //recuperar Destinatario
+        if(!idDestinatario.isEmpty()) {
+            DatabaseReference contatosRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child(ConfiguracaoFirebase.getUsuarioAtual().getUid()).child("contatos");
+            Query pesquisa = contatosRef.orderByKey().equalTo(idDestinatario);
+            pesquisa.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getChildrenCount()>0) {
+                        for (DataSnapshot ds:snapshot.getChildren()) {
+                            destinatario = ds.getValue(Usuario.class);
+                        }
+                    }
+                    //configurar conversa
+                    configurarElementos();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
+    private void recuperarGrupo(){
+        if(!idDestinatario.isEmpty()){
+            DatabaseReference grupoRef = ConfiguracaoFirebase.getFirebaseRef().child("grupos").child(idDestinatario);
+            grupoRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    grupo = snapshot.getValue(Grupo.class);
+
+                    //configurar conversa
+                    configurarElementos();
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
+    private void criarRecycler(){
+        //recyclerView
+        if(conversa.isGrupo()) {
+            adapterMensagens = new AdapterMensagens(listaMensagens, this, true);
+        }else {
+            adapterMensagens = new AdapterMensagens(listaMensagens, this, false);
+        }
+        recyclerConversa.setLayoutManager(new LinearLayoutManager(this));
+        recyclerConversa.setHasFixedSize(true);
+        recyclerConversa.setAdapter(adapterMensagens);
+    }
+
+    private void configurarElementos(){
+        if(!conversa.isGrupo()) {
+            //carregando nome
+            if (!destinatario.getNome().isEmpty()) {//eu tenho o contato salvo
+                nomeDestinatario.setText(destinatario.getNome());
+            } else {//nao tenho o contato salvo
+                nomeDestinatario.setText(idDestinatario);
+            }
+
+            //carregando foto
+            if (!destinatario.getFoto().isEmpty()) {
+                Picasso.get().load(destinatario.getFoto()).into(fotoDestinatario);
+            } else {
+                fotoDestinatario.setImageResource(R.drawable.padrao_usuario);
+            }
+        }else{
+
+            //carregando nome
+            nomeDestinatario.setText(grupo.getNome());
+
+            //carregando foto
+            if(!grupo.getFoto().isEmpty()){
+                Picasso.get().load(grupo.getFoto()).into(fotoDestinatario);
+            }else{
+                fotoDestinatario.setImageResource(R.drawable.padrao_usuario);
+            }
+
+            //escondendo o visto
+            statusDestinatario.setVisibility(View.GONE);
+
+        }
 
     }
 
@@ -226,6 +289,12 @@ public class ConversaActivity extends AppCompatActivity {
 
     }
 
+    private void abrirDetalhesGrupo(){
+        Intent detalhesGrupo = new Intent(ConversaActivity.this, DetalhesGrupoActivity.class);
+        detalhesGrupo.putExtra("grupo", grupo);
+        startActivity( detalhesGrupo );
+    }
+
     private void enviarMensagem(){
         //pegando texto da mensagem
         String texto = editMensagem.getText().toString();
@@ -233,18 +302,36 @@ public class ConversaActivity extends AppCompatActivity {
         //configurando mensagem
         Mensagem mensagem = new Mensagem();
         mensagem.setIdAutor( ConfiguracaoFirebase.getUsuarioAtual().getUid() );
-        mensagem.setStatus( STATUS_ENVIADA );
+        mensagem.setStatus( STATUS_ESPERANDO );
         mensagem.setTipo( MSG_TEXTO );
         mensagem.setIdContato( idDestinatario );
         mensagem.setTexto( texto );
         mensagem.setUrl("");
         mensagem.setData( Uteis.getData() );
-        mensagem.setHora( Uteis.getHora() );
-        mensagem.salvar( idDestinatario );
+        mensagem.setHora( Uteis.getHora());
+
+        //configurar conversa
+        if(conversa.isGrupo()) {
+            conversa.setNomeDestinatario(grupo.getNome());
+            conversa.setFotoDestinatario(grupo.getFoto());
+        }else {
+            conversa.setNomeDestinatario(destinatario.getNome());
+            conversa.setFotoDestinatario(destinatario.getFoto());
+        }
+
         conversa.setIdDestinatario( idDestinatario );
-        conversa.setFotoDestinatario( destinatario.getFoto() );
         conversa.setUltimaMensagem( mensagem );
-        conversa.registrar();
+        if(conversa.isGrupo()){
+            salvarConversaGrupo();
+        }else {
+            conversa.salvarConversaDestinatario();
+        }
+        //salvando mensagem
+        if(conversa.isGrupo()){
+            enviarMensagemGrupo(mensagem, grupo.getListaMembros());
+        }else{
+            enviarMensagemDestinatario(mensagem, idDestinatario);
+        }
 
         //limpando texto
         editMensagem.setText("");
@@ -252,14 +339,44 @@ public class ConversaActivity extends AppCompatActivity {
 
     }
 
+    private void salvarConversaGrupo(){
+        for (int i=0;i<grupo.getListaMembros().size();i++){
+            conversa.salvarConversaGrupo(grupo.getListaMembros().get(i).getIdUsuario());
+        }
+        conversa.salvarConversaGrupo(ConfiguracaoFirebase.getUsuarioAtual().getUid());
+    }
+
     private void abrirCamera(){
         Intent camera = new Intent(ConversaActivity.this, CameraActivity.class);
         startActivity( camera );
     }
 
-}
+    private void enviarMensagemDestinatario(Mensagem mensagem, String idDest){
+         /*
+        DEV ALERT! -> Por algum motivo, nao consigo salvar mais de uma mensagem no caminho usuarios/uid/conversas/idCnversa/mensagens/
+        A solução foi salvar as conversas em um lugar e as mensagens no outro, pelo caminho usuarios/uid/mensagens/idConversa/
+        */
 
-/*
-foto do remetente
-nome de contato dele no celular do destinatario
-*/
+        //salvando pro remetente
+        DatabaseReference remetenteRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child( ConfiguracaoFirebase.getUsuarioAtual().getUid() ).child("mensagens").child( idDest ).child( mensagem.getIdMensagem() );
+        remetenteRef.setValue(mensagem);
+
+        //salvando pro remetente
+        DatabaseReference destinatarioRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child( idDest ).child("mensagens").child( ConfiguracaoFirebase.getUsuarioAtual().getUid() ).child( mensagem.getIdMensagem() );
+        destinatarioRef.setValue(mensagem);
+    }
+
+    private void enviarMensagemGrupo(Mensagem mensagem, List<Usuario>listaMembros){
+        //salvando pro remetente
+        DatabaseReference remetenteRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child( ConfiguracaoFirebase.getUsuarioAtual().getUid() ).child("mensagens").child( idDestinatario ).child( mensagem.getIdMensagem() );
+        remetenteRef.setValue(mensagem);
+
+        //salvando para os destinatarios
+        for(int i=0;i<listaMembros.size();i++){
+            DatabaseReference membroRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child( listaMembros.get(i).getIdUsuario() ).child("mensagens").child( idDestinatario ).child( mensagem.getIdMensagem() );
+            membroRef.setValue(mensagem);
+        }
+
+    }
+
+}

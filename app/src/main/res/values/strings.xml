@@ -53,4 +53,7 @@
     <string name="bloquear">Bloquear</string>
     <string name="hora_padrao">00:00</string>
     <string name="adicione_legenda">Adicione uma legenda...</string>
+    <string name="digite_nome_grupo">Digite o nome do grupo aqui</string>
+    <string name="participantes">Participantes</string>
+    <string name="sair_do_grupo">Sair do Grupo</string>
 </resources>

@@ -10,24 +10,8 @@ public class Mensagem {
 
     public Mensagem() {
         //definindo id da mensagem
-        DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseRef().push();
+        DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child(ConfiguracaoFirebase.getUsuarioAtual().getUid()).child("mensagens").push();
         setIdMensagem( firebaseRef.getKey() );
-    }
-
-    public void salvar(String idDestinatario){
-        /*
-        DEV ALERT! -> Por algum motivo, nao consigo salvar mais de uma mensagem no caminho usuarios/uid/conversas/idCnversa/mensagens/
-        A solução foi salvar as conversas em um lugar e as mensagens no outro, pelo caminho usuarios/uid/mensagens/idConversa/
-        */
-
-        //salvando pro remetente
-        DatabaseReference remetenteRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child( ConfiguracaoFirebase.getUsuarioAtual().getUid() ).child("mensagens").child( getIdContato() ).child( getIdMensagem() );
-        remetenteRef.setValue(this);
-
-        //salvando pro remetente
-        DatabaseReference destinatarioRef = ConfiguracaoFirebase.getFirebaseRef().child("usuarios").child( idDestinatario ).child("mensagens").child( ConfiguracaoFirebase.getUsuarioAtual().getUid() ).child( getIdMensagem() );
-        destinatarioRef.setValue(this);
-
     }
 
     public String getIdMensagem() {

@@ -1,5 +1,7 @@
 package com.wendelstrauss.whatsclone.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -63,7 +65,9 @@ public class ConversasFragment extends Fragment {
 
                     @Override
                     public void onLongItemClick(View view, int position) {
-
+                        if(!listaConversas.get(position).isGrupo()){
+                            dialogApagar( listaConversas.get(position) );
+                        }
                     }
 
                     @Override
@@ -74,6 +78,30 @@ public class ConversasFragment extends Fragment {
         ));
 
         return view;
+    }
+
+    private void dialogApagar(Conversa conversa){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Apagar Conversa");
+        builder.setCancelable(false);
+        builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setPositiveButton("APAGAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                conversa.apagar();
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void abrirConversa( Conversa conversa ){
